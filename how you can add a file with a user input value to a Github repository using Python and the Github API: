@@ -1,0 +1,32 @@
+import requests
+import json
+
+# set your Github personal access token and repository information
+github_token = 'YOUR_PERSONAL_ACCESS_TOKEN'
+owner = 'YOUR_GITHUB_USERNAME'
+repo = 'YOUR_GITHUB_REPOSITORY_NAME'
+
+# get user input for the filename and value to be added to the file
+filename = input("Enter the filename (including extension): ")
+value = input("Enter the value you want to add to the file: ")
+
+# create the file content as a string
+file_content = f"{value}\n"
+
+# create a new file in the repository with the specified filename and content
+url = f"https://api.github.com/repos/{owner}/{repo}/contents/{filename}"
+headers = {
+    "Authorization": f"Token {github_token}",
+    "Accept": "application/vnd.github.v3+json"
+}
+data = {
+    "message": "Add a new file",
+    "content": file_content
+}
+response = requests.put(url, headers=headers, data=json.dumps(data))
+
+# check if the file was successfully added
+if response.status_code == 201:
+    print(f"{filename} was successfully added to {owner}/{repo} with content: {value}")
+else:
+    print(f"An error occurred: {response.json()['message']}")
